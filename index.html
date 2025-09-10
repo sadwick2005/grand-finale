@@ -1,417 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Animal Emoji Dashboard</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: #f4ede4;
-    color: #4b4b4b;
-  }
-  .dashboard {
-    max-width: 1100px;
-    margin: 60px auto 40px;
-    background: #fff3d5;
-    border-radius: 15px;
-    padding: 30px 40px 60px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    position: relative;
-  }
-  /* Top emoji header */
-  .emoji-header {
-    font-size: 48px;
-    text-align: center;
-    margin-bottom: 30px;
-    user-select: none;
-  }
-
-  /* Sidebar navigation */
-  .sidebar {
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    width: 150px;
-    background: #faf9f6;
-    border-radius: 15px;
-    padding: 30px 20px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    font-weight: 600;
-    color: #888;
-    user-select: none;
-  }
-  .sidebar .active {
-    color: #4b4b4b;
-    font-weight: 700;
-  }
-  .sidebar div {
-    cursor: pointer;
-  }
-  .sidebar div:hover:not(.active) {
-    color: #6a18ff;
-  }
-
-  /* User section top right */
-  .user-section {
-    position: absolute;
-    top: 30px;
-    right: 40px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-weight: 600;
-    font-size: 14px;
-    color: #4b4b4b;
-  }
-  .user-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #c0a77b;
-    color: white;
-    font-weight: 700;
-    font-size: 18px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    user-select: none;
-    cursor: default;
-  }
-  .btn-add-pet {
-    background-color: #566273;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 14px;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  .btn-add-pet:hover {
-    background-color: #434f58;
-  }
-
-  /* Main grid content */
-  .main-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 25px;
-    margin-top: 20px;
-  }
-
-  /* Stats summary left column */
-  .stats-summary {
-    background: #f6d068;
-    border-radius: 18px;
-    padding: 25px 25px 35px;
-    box-shadow: 0 8px 14px rgb(0 0 0 / 0.1);
-    max-width: 260px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  .stats-summary .logo {
-    font-size: 30px;
-    font-weight: 700;
-    user-select: none;
-  }
-  .stats-summary .desc {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: #4b4b4b;
-  }
-  .stats-summary .location-contact {
-    font-size: 12px;
-    color: #5d5d5d;
-    margin-bottom: 20px;
-  }
-  .stats-summary .stat {
-    font-weight: 700;
-    font-size: 18px;
-    margin-bottom: 4px;
-    color: #4b4b4b;
-  }
-  .stats-summary .label {
-    font-size: 12px;
-    color: #7a6f3f;
-    font-weight: 600;
-    margin-bottom: 16px;
-  }
-
-  /* Stat card styles */
-  .stat-card {
-    background: #f6d068;
-    border-radius: 18px;
-    padding: 25px 25px 35px;
-    box-shadow: 0 8px 14px rgb(0 0 0 / 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .stat-card h3 {
-    margin: 0 0 15px 0;
-    font-weight: 700;
-    font-size: 18px;
-    color: #4b4b4b;
-  }
-  .stat-card table {
-    width: 100%;
-    border-collapse: collapse;
-    color: #4b4b4b;
-    font-size: 14px;
-  }
-  .stat-card table tr {
-    border-bottom: 1px solid #c4a74c;
-  }
-  .stat-card table tr:last-child {
-    border-bottom: none;
-  }
-  .stat-card table td:first-child {
-    font-weight: 600;
-    padding: 8px 6px;
-    opacity: 0.8;
-  }
-  .stat-card table td:last-child {
-    text-align: right;
-    padding: 8px 6px;
-    font-weight: 700;
-  }
-
-  /* Line graph container */
-  .line-graph {
-    position: relative;
-    height: 180px;
-  }
-
-  /* Info box text with emoji avatars */
-  .info-box {
-    background: #f6d068;
-    border-radius: 18px;
-    padding: 20px 20px 25px;
-    font-size: 14px;
-    box-shadow: 0 8px 14px rgb(0 0 0 / 0.1);
-  }
-  .info-box strong {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 700;
-    color: #4b4b4b;
-  }
-  .info-box small {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 400;
-    color: #6c6c6c;
-  }
-  .avatars-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 28px;
-    margin-top: 6px;
-    user-select: none;
-  }
-  .avatars-row .more {
-    background: #566273;
-    color: white;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    text-align: center;
-    line-height: 28px;
-    font-weight: 700;
-  }
-
-  /* Recent pets list */
-  .recent-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .recent-list li {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid #c4a74c;
-    font-size: 14px;
-    color: #4b4b4b;
-  }
-  .recent-list li:last-child {
-    border-bottom: none;
-  }
-  .recent-list .emoji-avatar {
-    font-size: 24px;
-    user-select: none;
-  }
-  .recent-list .pet-info {
-    flex-grow: 1;
-  }
-
-  /* Responsive */
-  @media (max-width: 900px) {
-    .main-content {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto auto auto auto;
+  <meta charset="UTF-8">
+  <title>Pet Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
     }
-    .stats-summary {
-      max-width: 100%;
-      flex-direction: row;
-      justify-content: space-around;
-      padding: 15px 15px;
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2eae1;
     }
-    .stats-summary div.stat {
-      font-size: 16px;
+
+    .dashboard {
+      display: flex;
+      height: 100vh;
     }
+
     .sidebar {
-      position: static;
-      width: 100%;
-      height: auto;
-      flex-direction: row;
-      justify-content: space-around;
-      padding: 12px 0;
-      margin-bottom: 20px;
-      border-radius: 0;
-      box-shadow: none;
+      width: 220px;
+      background-color: #fff;
+      padding: 30px 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+
+    .sidebar h2 {
+      font-size: 20px;
+      margin-bottom: 30px;
+      color: #222;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      margin: 15px 0;
+      color: #555;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .main {
+      flex-grow: 1;
+      padding: 30px;
+      background-color: #fcf6ef;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header .emoji-row {
+      font-size: 40px;
+    }
+
+    .header button {
+      padding: 10px 18px;
+      background-color: #ff9f1c;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .header .user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: #ffe9b8;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      font-size: 18px;
+      color: #444;
+    }
+
+    .card .stats {
+      font-size: 14px;
+      margin-top: 10px;
+      color: #666;
+    }
+
+    .stats-box {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .stats-box span {
       font-size: 14px;
     }
-    .user-section {
-      position: static;
-      justify-content: center;
-      margin-bottom: 15px;
+
+    .chart {
+      height: 100px;
+      background: linear-gradient(to right, #ffa500, #ffce00);
+      border-radius: 8px;
+      margin-top: 10px;
     }
-  }
-</style>
+
+    .pet-list {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pet-list span {
+      font-size: 24px;
+    }
+
+    .pet-entry {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
 </head>
 <body>
-  <div class="dashboard" role="main">
-    <!-- Top emoji header -->
-    <div class="emoji-header" aria-label="Animal emojis">
-      🐶 🐱 🦊 🐰 🐻 🐼 🐨
+  <div class="dashboard">
+    <div class="sidebar">
+      <h2>Dashboard</h2>
+      <ul>
+        <li>Pet Listings</li>
+        <li>Statistics</li>
+        <li>Settings</li>
+      </ul>
     </div>
+    <div class="main">
+      <div class="header">
+        <div class="emoji-row">🐶 🐱 🐔 🦜 🐇 🐢 🐠</div>
+        <div class="user">
+          <button>ADD A PET</button>
+          <span>Sai Sadwick</span>
+        </div>
+      </div>
 
-    <!-- Sidebar navigation -->
-    <nav class="sidebar" aria-label="Main navigation">
-      <div class="active">🏠 Dashboard</div>
-      <div>📋 Pet listings</div>
-      <div>📊 Statistics</div>
-      <div>⚙️ Settings</div>
-    </nav>
+      <div class="cards">
+        <div class="card">
+          <h3>Organization Summary</h3>
+          <div class="stats-box">
+            <span>68 Adoptable Pets Posted</span>
+            <span>20 Adoptions Pending</span>
+            <span>76 Pets on Hold</span>
+            <span>34 Pets Adopted</span>
+            <span>08 Draft</span>
+          </div>
+        </div>
 
-    <!-- User info and Add Pet button top right -->
-    <div class="user-section">
-      <button class="btn-add-pet" aria-label="Add a pet">Add a Pet</button>
-      <div>Jonathan Smith</div>
-      <div class="user-avatar" title="User initials">JS</div>
+        <div class="card">
+          <h3>This Week Stats</h3>
+          <div class="stats-box">
+            <span>Listings Added: 45</span>
+            <span>Pets Adopted: 66</span>
+            <span>Pets Inquiries: 45</span>
+            <span>Pets Views: 34</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>This Week Views</h3>
+          <div class="chart"></div>
+        </div>
+
+        <div class="card">
+          <h3>Featured Pets</h3>
+          <div class="pet-list">
+            <span>🐶</span><span>🐱</span><span>🐔</span><span>🦜</span><span>+3</span>
+          </div>
+          <div class="pet-entry"><strong>June</strong><br>Lorem ipsum - dummy text</div>
+          <div class="pet-entry"><strong>Max</strong><br>Lorem ipsum - dummy text</div>
+          <div class="pet-entry"><strong>Pluto</strong><br>Lorem ipsum - dummy text</div>
+          <div class="pet-entry"><strong>Rock</strong><br>Lorem ipsum - dummy text</div>
+        </div>
+      </div>
+
+      <footer>
+        © 2025 Somebody. All rights reserved.
+      </footer>
     </div>
-
-    <!-- Main content grid -->
-    <div class="main-content">
-      <!-- Left summary stats -->
-      <section class="stats-summary" aria-label="Summary statistics">
-        <div class="logo" aria-label="Company logo">🌟 WOWPUP</div>
-        <div class="desc">Lorem Ipsum has been the industry's</div>
-        <div class="location-contact" aria-label="Locations and contacts">2 Locations | 1 Contact</div>
-        
-        <div>
-          <div class="stat" aria-label="Adoptable pets posted">68</div>
-          <div class="label">ADOPTABLE PETS POSTED</div>
-        </div>
-        <div>
-          <div class="stat" aria-label="Adoptions pending">20</div>
-          <div class="label">ADOPTIONS PENDING</div>
-        </div>
-        <div>
-          <div class="stat" aria-label="Pets on hold">76</div>
-          <div class="label">PETS ON HOLD</div>
-        </div>
-        <div>
-          <div class="stat" aria-label="Pets adopted">34</div>
-          <div class="label">PETS ADOPTED</div>
-        </div>
-        <div>
-          <div class="stat" aria-label="Draft items">08</div>
-          <div class="label">DRAFT</div>
-        </div>
-      </section>
-
-      <!-- This week stats -->
-      <section class="stat-card" aria-label="This week statistics">
-        <h3>This week Stats</h3>
-        <table>
-          <tbody>
-            <tr>
-              <td>Listing added</td>
-              <td>45</td>
-            </tr>
-            <tr>
-              <td>Pets adopted</td>
-              <td>66</td>
-            </tr>
-            <tr>
-              <td>Pets inquiries</td>
-              <td>78</td>
-            </tr>
-            <tr>
-              <td>Pets views</td>
-              <td>34</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <!-- This week views graph -->
-      <section class="stat-card" aria-label="This week views">
-        <h3>This week Views</h3>
-        <canvas id="viewsChart" class="line-graph" role="img" aria-label="Line graph showing weekly views"></canvas>
-      </section>
-
-      <!-- Lorem Ipsum and avatars -->
-      <section class="info-box" aria-label="Text description with pets">
-        <strong>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</strong>
-        <small>Lorem Ipsum has been the industry's standard dummy text ever since</small>
-        <div class="avatars-row" aria-label="Pets: Dog, Poodle, Guide Dog, Service Dog, and more">
-          🐕 🐩 🦮 🐕‍🦺 <div class="more">+3</div>
-        </div>
-      </section>
-
-      <!-- Recent pets -->
-      <section class="info-box" aria-label="Recent pets">
-        <ul class="recent-list">
-          <li><span class="emoji-avatar" aria-hidden="true">🐕</span><div class="pet-info"><strong>June</strong><small>Lorem Ipsum is simply dummy text of the printing</small></div></li>
-          <li><span class="emoji-avatar" aria-hidden="true">🐕‍🦺</span><div class="pet-info"><strong>Max</strong><small>Lorem Ipsum is simply dummy text of the printing</small></div></li>
-          <li><span class="emoji-avatar" aria-hidden="true">🐩</span><div class="pet-info"><strong>Pluto</strong><small>Lorem Ipsum is simply dummy text of the printing</small></div></li>
-          <li><span class="emoji-avatar" aria-hidden="true">🦮</span><div class="pet-info"><strong>Rock</strong><small>Lorem Ipsum is simply dummy text of the printing</small></div></li>
-        </ul>
-      </section>
-    </div>
-
-    <footer style="text-align:center; font-size:12px; color:#999; margin-top: 20px;">
-      Copyright © 2020 Somebuddy. All rights reserved.
-    </footer>
   </div>
 
-<script>
-  // Canvas line graph for "This week Views"
-
-  const canvas = document.getElementById('viewsChart');
-  const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-
-  function resizeCanvas() {
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    canvas.width = width * dpr;
-    canvas.height = height * d
+  <script>
+    // Sample script for future interactivity (optional)
+    document.querySelector('button').addEventListener('click', () => {
+      alert('Add a pet feature coming soon!');
+    });
+  </script>
+</body>
+</html>
